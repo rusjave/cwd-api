@@ -5,10 +5,6 @@ CWD deNoted App is [[https://github.com/cloudwalkph][Cloudwalk Digital]]'s techn
 application that provides a simple organizer for the user to store notes
 and TODOs.
 
-* Requirements
-  * Time: 24 Hours
-  * Programming Language: PHP
-  * Framework: Laravel 5.x^
 
 * Instructions
 
