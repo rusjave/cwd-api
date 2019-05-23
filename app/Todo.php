@@ -4,8 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Activities extends Model
+class Todo extends Model
 {
-	protected $table = 'activities';
+  protected $table = 'todos';
 	protected $fillable = ['title','contents', 'status'];
 }

@@ -71,45 +71,45 @@
 
     <script type="text/javascript">
       
-      $(document).ready(function(){
+      $(document).ready(function(){ 
+
         // Add activity
       $('body').on('click', '#submitForm', function(){
           var registerForm = $("#AddActivity");
           var formData = registerForm.serialize();
           $( '#title-error' ).html( "" );
           $( '#contents-error' ).html( "" );
-          $( '#activity_type-error' ).html( "" );
 
           $.ajax({
-              url:'/addActivity',
+              url:'api/addNote',
               type:'POST',
               data:formData,
               success:function(data) {
-                  console.log(data);
-                  if(data.errors) {
-                    if(data.errors.title){
-                      $( '#title-error' ).html( data.errors.title[0] );
-                    }
-                    if(data.errors.contents){
-                      $( '#contents-error' ).html( data.errors.contents[0] );
-                    }
-                    if(data.errors.activity_type){
-                      $( '#activity_type-error' ).html( data.errors.activity_type[0] );
-                    }
-                    if(data.errors.status){
-                      $( '#status-error' ).html( data.errors.status[0] );
-                    }
+                console.log(data);
+                if(data.errors) {
+                  if(data.errors.title){
+                    $( '#title-error' ).html( data.errors.title[0] );
                   }
-                  if(data.success) {
-                    $('#success-msg').removeClass('hide');
-                    setInterval(function(){ 
-                        $('#AddModal').modal('hide');
-                         window.location.reload();
-                        $('#success-msg').addClass('hide');
-                    }, 3000);
+                  if(data.errors.contents){
+                    $( '#contents-error' ).html( data.errors.contents[0] );
                   }
+                  if(data.errors.status){
+                    $( '#status-error' ).html( data.errors.status[0] );
+                  }
+                }
+  
+                var json = data;
+                  if(json.status == 200) {
+                    alert(json.message);
+                    setTimeout(function() {
+                      window.location.reload();
+                    }, 2000);
+                } else {
+                  alert("Added Failed!");
+                }
               },
           });
+          return false;
       });
       // Show activity 
       $('#show').on('show.bs.modal', function (event) {
@@ -117,14 +117,12 @@
         var id = button.data('id');
         var title = button.data('title');
         var contents = button.data('contents');
-        var activity_type = button.data('activity-type');
         var status = button.data('status');      
         var modal = $(this);
         
         modal.find('.modal-body #id_show').val(id);
         modal.find('.modal-body #title_show').val(title);
         modal.find('.modal-body #contents_show').val(contents);
-        modal.find('.modal-body #activity_type_show').val(activity_type);
         modal.find('.modal-body #status_show').val(status);
       })
       // Edit activity  
@@ -146,18 +144,17 @@
       // Update activity
         $('.modal-footer').on('click', '#updateActivity', function(){         
           $.ajax({
-              url:'/updateActivity',
+              url:'api/updateNote',
               type:'POST',
               data:{
                 '_token' : $('input[name=_token]').val(),
                 'id' : $('#id_edit').val(),
                 'title' : $('#title_edit').val(),
                 'contents' : $('#contents_edit').val(),
-                'activity_type' : $('#activity_type_edit').val(),
                 'status' : $('#status_edit').val()  
               },
               success:function(data) {
-                  console.log(data);
+
                   if(data.errors) {
                     if(data.errors.title){
                       $( '#title-edit-error' ).html( data.errors.title[0] );
@@ -165,23 +162,23 @@
                     if(data.errors.contents){
                       $( '#contents-edit-error' ).html( data.errors.contents[0] );
                     }
-                    if(data.errors.activity_type){
-                      $( '#activity_type-edit-error' ).html( data.errors.activity_type[0] );
-                    }
                     if(data.errors.status){
                       $( '#status-edit-error' ).html( data.errors.status[0] );
                     }
                   }
-                  if(data.success) {
-                    $('#success-msg-update').removeClass('hide');
-                    setInterval(function(){ 
-                      $('#edit').modal('hide');
-                       window.location.reload();
-                      $('#success-msg-update').addClass('hide');
-                    }, 3000);
-                  }
+                  //console.log(data);
+                  var json = data;
+                  if(json.status == 200) {
+                     alert(json.message);
+                     setTimeout(function() {
+                      window.location.reload();
+                    }, 2000);
+                  }else {
+                    alert('Update Failed!');
+                  }                             
               },
           });
+          return false;
       });
       // Delete activity
         $('#delete').on('show.bs.modal', function (event) {
@@ -194,25 +191,170 @@
   
         $('.modal-footer').on('click', '#deleteProduct', function(){         
           $.ajax({
-              url:'/deleteActivity',
+              url:'api/deleteNote',
               type:'POST',
               data:{
                 '_token' : $('input[name=_token]').val(),
                 'id' : $('#id_delete').val(),
               },
               success:function(data) {
-                console.log(data);
-                  $('#success-msg-delete').removeClass('hide');
-                  setInterval(function(){ 
-                    $('#delete').modal('hide');
-                     window.location.reload();
-                    $('#success-msg-delete').addClass('hide');
-                  }, 3000);
-                },
+                //console.log(data);
+                var json = data;
+                if (json.status == 200) {
+                  alert("Deleted Success!");
+                  setTimeout(function() {
+                    window.location.reload();
+                  }, 2000);
+                } else {
+                  alert("Deleted Failed!");
+                }
+              },
             });
           });
       });
      
+       // Add Todo
+      $('body').on('click', '#submitTodo', function(){
+          var registerForm = $("#AddTodo");
+          var formData = registerForm.serialize();
+          $( '#title-todo-error' ).html( "" );
+          $( '#contents-todo-error' ).html( "" );
+
+          $.ajax({
+              url:'api/addTodo',
+              type:'POST',
+              data:formData,
+              success:function(data) {
+                console.log(data);
+                if(data.errors) {
+                  if(data.errors.title){
+                    $( '#title-todo-error' ).html( data.errors.title[0] );
+                  }
+                  if(data.errors.contents){
+                    $( '#contents-todo-error' ).html( data.errors.contents[0] );
+                  }
+                  if(data.errors.status){
+                    $( '#status-todo-error' ).html( data.errors.status[0] );
+                  }
+                }
+  
+                var json = data;
+                  if(json.status == 200) {
+                    alert(json.message);
+                    setTimeout(function() {
+                      window.location.reload();
+                    }, 2000);
+                } else {
+                  alert("Added Failed!");
+                }
+              },
+          });
+          return false;
+      });
+       // Show activity 
+      $('#show-todo').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); 
+        var id = button.data('id');
+        var title = button.data('title');
+        var contents = button.data('contents');
+        var status = button.data('status');      
+        var modal = $(this);
+        
+        modal.find('.modal-body #id_show').val(id);
+        modal.find('.modal-body #title_show').val(title);
+        modal.find('.modal-body #contents_show').val(contents);
+        modal.find('.modal-body #status_show').val(status);
+      });
+
+       // Edit todo  
+      $('#edit-todo').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); 
+        var id = button.data('id');
+        var title = button.data('title');
+        var contents = button.data('contents');
+        var activity_type = button.data('activity-type');
+        var status = button.data('status');      
+        var modal = $(this);
+        
+        modal.find('.modal-body #id_edit_todo').val(id);
+        modal.find('.modal-body #title_edit_todo').val(title);
+        modal.find('.modal-body #contents_edit_todo').val(contents);
+        modal.find('.modal-body #activity_type_edit_todo').val(activity_type);
+        modal.find('.modal-body #status_edit_todo').val(status);
+      });
+
+      // Update todo
+        $('.modal-footer').on('click', '#updateTodo', function(){         
+          $.ajax({
+              url:'api/updateTodo',
+              type:'POST',
+              data:{
+                '_token' : $('input[name=_token]').val(),
+                'id' : $('#id_edit_todo').val(),
+                'title' : $('#title_edit_todo').val(),
+                'contents' : $('#contents_edit_todo').val(),
+                'status' : $('#status_edit_todo').val()  
+              },
+              success:function(data) {
+
+                  if(data.errors) {
+                    if(data.errors.title){
+                      $( '#title-t-error' ).html( data.errors.title[0] );
+                    }
+                    if(data.errors.contents){
+                      $( '#contents-t-error' ).html( data.errors.contents[0] );
+                    }
+                    if(data.errors.status){
+                      $( '#status-t-error' ).html( data.errors.status[0] );
+                    }
+                  }
+                  //console.log(data);
+                  var json = data;
+                  if(json.status == 200) {
+                     alert(json.message);
+                     setTimeout(function() {
+                      window.location.reload();
+                    }, 2000);
+                  }else {
+                    alert('Update Failed!');
+                  }                             
+              },
+          });
+          return false;
+      });
+
+      // Delete todo
+        $('#delete-todo').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); 
+        var id = button.data('id');
+        var modal = $(this);
+  
+        modal.find('.modal-body #id_del_todo').val(id);
+      })
+  
+      $('.modal-footer').on('click', '#deleteTodo', function(){         
+        $.ajax({
+            url:'api/deleteTodo',
+            type:'POST',
+            data:{
+              '_token' : $('input[name=_token]').val(),
+              'id' : $('#id_del_todo').val(),
+            },
+            success:function(data) {
+              //console.log(data);
+              var json = data;
+              if (json.status == 200) {
+                alert("Deleted Success!");
+                setTimeout(function() {
+                  window.location.reload();
+                }, 2000);
+              } else {
+                alert("Deleted Failed!");
+              }
+            },
+          });
+      });
+   
     </script>
   </body>
 </html>
